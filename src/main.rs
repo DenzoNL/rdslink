@@ -1,13 +1,12 @@
 use aws_config::profile;
+use inquire::Select;
 use tokio; // For async main
 
 #[tokio::main]
 async fn main() {
-    let profiles = get_aws_profiles().await;
-    println!("AWS Profiles:");
-    for profile in profiles {
-        println!("{}", profile);
-    }
+    let profile = Select::new("Select AWS profile:", get_aws_profiles().await)
+        .prompt()
+        .unwrap();
 }
 
 async fn get_aws_profiles() -> Vec<String> {
