@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on tags like v1.0.0
+
+jobs:
+  build:
+    name: Build and Release Binaries
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build project
+        run: cargo build --release
+
+      - name: Set up binary name and paths
+        id: prep
+        shell: bash
+        run: |
+          BINARY_NAME=rdslink  # <-- Replace with your binary name
+          OS="${{ runner.os }}"
+          EXT=""
+          if [[ "$OS" == "Windows" ]]; then
+            EXT=".exe"
+          fi
+          ARTIFACT="${BINARY_NAME}-${OS}${EXT}"
+          cp target/release/${BINARY_NAME}${EXT} $ARTIFACT
+          echo "artifact=$ARTIFACT" >> $GITHUB_OUTPUT
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.prep.outputs.artifact }}
+          path: ${{ steps.prep.outputs.artifact }}
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
