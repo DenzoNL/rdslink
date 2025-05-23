@@ -1,18 +1,23 @@
+mod args;
 mod aws;
 mod ec2;
 mod models;
 mod port_forwarding;
 mod rds;
 
+use crate::args::Args;
 use crate::aws::get_aws_config;
 use crate::aws::get_aws_profiles;
 use crate::ec2::get_running_ec2_instances;
 use crate::port_forwarding::start_port_forwarding_session;
 use crate::rds::get_rds_instances;
+use clap::Parser;
 use inquire::Select;
 
 #[tokio::main]
 async fn main() {
+    let args = Args::parse();
+
     let profile_name = Select::new("Select AWS profile:", get_aws_profiles().await)
         .prompt()
         .unwrap();
@@ -21,7 +26,7 @@ async fn main() {
 
     let ec2_instance = Select::new(
         "Select EC2 instance:",
-        get_running_ec2_instances(&config).await,
+        get_running_ec2_instances(&config, &args).await,
     )
     .prompt()
     .unwrap();
@@ -33,7 +38,7 @@ async fn main() {
         &profile_name,
         &ec2_instance.instance_id,
         &rds_instance.endpoint,
-        "3306",
-        "1053",
+        &args.remote_port,
+        &args.local_port,
     );
 }
