@@ -10,7 +10,9 @@ pub async fn get_aws_profiles() -> Vec<String> {
     .await
     .unwrap();
 
-    profile_set.profiles().map(ToString::to_string).collect()
+    let mut profiles: Vec<String> = profile_set.profiles().map(ToString::to_string).collect();
+    profiles.sort();
+    profiles
 }
 
 pub async fn get_aws_config(profile_name: &str) -> SdkConfig {
