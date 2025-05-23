@@ -7,12 +7,15 @@ pub async fn get_aws_profiles() -> Vec<String> {
         &Default::default(),
         None,
     )
-        .await
-        .unwrap();
+    .await
+    .unwrap();
 
     profile_set.profiles().map(ToString::to_string).collect()
 }
 
 pub async fn get_aws_config(profile_name: &str) -> SdkConfig {
-    aws_config::defaults(BehaviorVersion::v2025_01_17()).profile_name(profile_name).load().await
+    aws_config::defaults(BehaviorVersion::v2025_01_17())
+        .profile_name(profile_name)
+        .load()
+        .await
 }

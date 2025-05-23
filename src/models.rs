@@ -6,14 +6,19 @@ pub struct EC2Instance {
 
 impl std::fmt::Display for EC2Instance {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-        writeln!(f, "{} ({})", self.instance_id, self.name.as_deref().unwrap_or("-"))
+        writeln!(
+            f,
+            "{} ({})",
+            self.instance_id,
+            self.name.as_deref().unwrap_or("-")
+        )
     }
 }
 
 #[derive(Debug)]
 pub struct RDSInstance {
     pub name: String,
-    pub endpoint: String
+    pub endpoint: String,
 }
 
 impl std::fmt::Display for RDSInstance {
