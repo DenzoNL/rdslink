@@ -26,25 +26,37 @@ jobs:
       - name: Build project
         run: cargo build --release
 
-      - name: Set up binary name and paths
+      - name: Prepare artifact
         id: prep
         shell: bash
         run: |
-          BINARY_NAME=rdslink  # <-- Replace with your binary name
+          BINARY_NAME=rdslink
           OS="${{ runner.os }}"
           EXT=""
+          ARTIFACT_NAME=""
+
           if [[ "$OS" == "Windows" ]]; then
             EXT=".exe"
+            ARTIFACT_NAME="${BINARY_NAME}-windows${EXT}"
+            cp "target/release/${BINARY_NAME}${EXT}" "$ARTIFACT_NAME"
+          else
+            # Normalize OS name for filename (macOS/Linux)
+            OS_LOWER=$(echo "$OS" | tr '[:upper:]' '[:lower:]')
+            STAGING="staging"
+            mkdir -p "$STAGING"
+            cp "target/release/${BINARY_NAME}${EXT}" "$STAGING/${BINARY_NAME}"
+            chmod +x "$STAGING/${BINARY_NAME}"
+            ARTIFACT_NAME="${BINARY_NAME}-${OS_LOWER}.tar.gz"
+            tar -czvf "$ARTIFACT_NAME" -C "$STAGING" "${BINARY_NAME}"
           fi
-          ARTIFACT="${BINARY_NAME}-${OS}${EXT}"
-          cp target/release/${BINARY_NAME}${EXT} $ARTIFACT
-          echo "artifact=$ARTIFACT" >> $GITHUB_OUTPUT
 
-      - name: Upload build artifact
+          echo "artifact_name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.prep.outputs.artifact }}
-          path: ${{ steps.prep.outputs.artifact }}
+          name: ${{ steps.prep.outputs.artifact_name }}
+          path: ${{ steps.prep.outputs.artifact_name }}
 
   release:
     name: Create GitHub Release
