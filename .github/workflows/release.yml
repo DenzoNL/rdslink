@@ -6,7 +6,13 @@ permissions:
 on:
   push:
     tags:
-      - 'v*'  # Trigger on tags like v1.0.0
+      - 'v*'
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_PROFILE_RELEASE_CODEGEN_UNITS: 1
+  CARGO_PROFILE_RELEASE_LTO: true
+  CARGO_PROFILE_TEST_DEBUG: 0
 
 jobs:
   build:
@@ -23,8 +29,10 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - uses: Swatinem/rust-cache@v2
+
       - name: Build project
-        run: cargo build --release
+        run: cargo build --locked --release
 
       - name: Prepare artifact
         id: prep

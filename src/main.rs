@@ -47,9 +47,18 @@ async fn main() {
     let config = get_aws_config(&profile_name).await;
 
     if let Err(e) = validate_aws_config(&config).await {
-        eprintln!(
-            "Error validating AWS config: {e}.\n\nPlease check your AWS credentials and configuration."
-        );
+        if e.contains("dispatch failure") {
+            eprintln!(
+                "Could not validate AWS config: {e}\n\
+            This may mean your AWS SSO session has expired or you are not logged in.\n\
+            To login, please run:\n\n\
+            aws sso login --profile {profile_name}"
+            );
+        } else {
+            eprintln!(
+                "Error validating AWS config: {e}.\n\nPlease check your AWS credentials and configuration."
+            );
+        }
         exit(1);
     }
 
@@ -77,7 +86,7 @@ async fn main() {
             exit(1);
         }
     };
-    
+
     let rds_instances = match get_rds_instances(&config).await {
         Ok(instances) => {
             if instances.is_empty() {
@@ -91,19 +100,18 @@ async fn main() {
             exit(1);
         }
     };
-    
-    let rds_instance =
-        match Select::new("Select RDS instance:", rds_instances).prompt() {
-            Ok(instance) => instance,
-            Err(inquire::error::InquireError::OperationInterrupted) => {
-                println!("Selection cancelled. Exiting application.");
-                exit(0);
-            }
-            Err(e) => {
-                eprintln!("Error: {e}");
-                exit(1);
-            }
-        };
+
+    let rds_instance = match Select::new("Select RDS instance:", rds_instances).prompt() {
+        Ok(instance) => instance,
+        Err(inquire::error::InquireError::OperationInterrupted) => {
+            println!("Selection cancelled. Exiting application.");
+            exit(0);
+        }
+        Err(e) => {
+            eprintln!("Error: {e}");
+            exit(1);
+        }
+    };
 
     start_port_forwarding_session(
         &profile_name,
