@@ -3,12 +3,19 @@
 **rdslink** is a Rust CLI tool that simplifies connecting to AWS RDS instances by automating the setup of a secure
 tunnel through AWS SSM and EC2 bastion hosts.
 
-## Features
+## How it works
 
-- Lists running EC2 instances with optional name filtering
-- Supports AWS profile selection
-- Establishes port forwarding to RDS via SSM Session Manager
-- Simple command-line interface
+**rdslink** automates the process of connecting by prompting you through the following steps:
+
+1. **Select AWS profile**: Choose from your configured AWS profiles.
+2. **List EC2 bastions**: Running EC2 instances are filtered and shown for selection.
+3. **List RDS instances**: Available RDS databases are listed for you to pick.
+4. **Establish tunnel**: A secure port-forwarding session is set up via SSM through the selected EC2 instance to your
+   RDS
+   database.
+
+Once the tunnel is established, simply connect to the local port (default: 1053) specified in the options
+and enjoy hassle-free tunnelling!
 
 ## Prerequisites
 
@@ -16,15 +23,19 @@ tunnel through AWS SSM and EC2 bastion hosts.
 - AWS credentials configured (via `~/.aws/config` or environment)
 - SSM permissions for the target EC2 instance
 
-## Installation
+## Installation (macOS)
 
-Clone the repository and build with Cargo:
+Install via Homebrew:
 
 ```sh
-git clone <repo-url>
-cd rdslink
-cargo build --release
+$ brew tap DenzoNL/rdslink
+$ brew install rdslink
 ```
+
+## Installation (Windows)
+
+For Windows, you can download the latest release from
+the [GitHub releases page](https://github.com/DenzoNL/rdslink/releases)
 
 ## Usage
 
@@ -50,6 +61,10 @@ forwarding from local port 15432 to the RDS instance via the selected bastion.
 ## Todo list
 
 - [ ] Refactor Copilot code to be a bit simpler and cleaner
+- [ ] Add packaging for Windows using winget
+- [ ] Add tests
+- [ ] Block pushing to main branch without a PR
+- [ ] Add Github Actions for CI/CD, e.g. linting, static analysis, testing, building
 
 ## License
 
