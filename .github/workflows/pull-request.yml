@@ -32,4 +32,4 @@ jobs:
         run: cargo test --locked --all
 
       - name: Build (release)
-        run: cargo build --locked release
+        run: cargo build --locked --release
