@@ -1,5 +1,5 @@
 use aws_config::profile::ProfileFileLoadError;
-use aws_config::{profile, BehaviorVersion, SdkConfig};
+use aws_config::{BehaviorVersion, SdkConfig, profile};
 
 pub async fn get_aws_profiles() -> Result<Vec<String>, ProfileFileLoadError> {
     let profile_set = profile::load(
