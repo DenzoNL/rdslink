@@ -1,10 +1,13 @@
 use crate::models::RDSInstance;
 use aws_config::SdkConfig;
+use aws_sdk_rds::{Client, Error};
 
-pub async fn get_rds_instances(config: &SdkConfig) -> Vec<RDSInstance> {
-    let client = aws_sdk_rds::Client::new(config);
+pub async fn get_rds_instances(
+    config: &SdkConfig,
+) -> Result<Vec<RDSInstance>, Error> {
+    let client = Client::new(config);
 
-    let output = client.describe_db_instances().send().await.unwrap();
+    let output = client.describe_db_instances().send().await?;
 
     let mut instances = vec![];
 
@@ -22,5 +25,5 @@ pub async fn get_rds_instances(config: &SdkConfig) -> Vec<RDSInstance> {
         instances.push(RDSInstance { name, endpoint });
     }
 
-    instances
+    Ok(instances)
 }

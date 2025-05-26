@@ -2,7 +2,10 @@ use crate::args::Args;
 use crate::models::EC2Instance;
 use aws_config::SdkConfig;
 
-pub async fn get_running_ec2_instances(config: &SdkConfig, args: &Args) -> Vec<EC2Instance> {
+pub async fn get_running_ec2_instances(
+    config: &SdkConfig,
+    args: &Args,
+) -> Result<Vec<EC2Instance>, aws_sdk_ec2::Error> {
     let client = aws_sdk_ec2::Client::new(config);
 
     let output = client
@@ -14,8 +17,7 @@ pub async fn get_running_ec2_instances(config: &SdkConfig, args: &Args) -> Vec<E
                 .build(),
         )
         .send()
-        .await
-        .unwrap();
+        .await?;
 
     let mut instances = vec![];
 
@@ -33,10 +35,10 @@ pub async fn get_running_ec2_instances(config: &SdkConfig, args: &Args) -> Vec<E
     }
 
     if args.ec2_filter.is_empty() {
-        return instances;
+        return Ok(instances);
     }
 
-    instances
+    Ok(instances
         .into_iter()
         .filter(|instance| {
             instance.name.as_ref().is_some_and(|name| {
@@ -44,5 +46,5 @@ pub async fn get_running_ec2_instances(config: &SdkConfig, args: &Args) -> Vec<E
                     .contains(&args.ec2_filter.to_ascii_lowercase())
             })
         })
-        .collect()
+        .collect())
 }

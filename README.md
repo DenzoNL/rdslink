@@ -49,10 +49,7 @@ forwarding from local port 15432 to the RDS instance via the selected bastion.
 
 ## Todo list
 
-- [ ] Proper error handling instead of unwrapping and panicking
 - [ ] Refactor Copilot code to be a bit simpler and cleaner
-- [ ] Add GitHub Actions for CI/CD
-- [ ] Create a proper release flow
 
 ## License
 
