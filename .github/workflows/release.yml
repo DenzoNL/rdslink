@@ -38,9 +38,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: powershell
         run: |
-          choco install innosetup --no-progress
           $version = "${{ github.ref_name }}".TrimStart("v")
-          iscc.exe `.github\installer\windows.iss` /DAppVersion=$version
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" ".github\installer\windows.iss" /DAppVersion=$version
 
       - name: Prepare artifact
         id: prep
