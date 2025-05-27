@@ -34,6 +34,14 @@ jobs:
       - name: Build project
         run: cargo build --locked --release
 
+      - name: Prepare Windows Installer
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          choco install innosetup --no-progress
+          $version = "${{ github.ref_name }}".TrimStart("v")
+          iscc.exe `.github\installer\windows.iss` /DAppVersion=$version
+
       - name: Prepare artifact
         id: prep
         shell: bash
@@ -45,10 +53,8 @@ jobs:
 
           if [[ "$OS" == "Windows" ]]; then
             EXT=".exe"
-            ARTIFACT_NAME="${BINARY_NAME}-windows${EXT}"
-            cp "target/release/${BINARY_NAME}${EXT}" "$ARTIFACT_NAME"
+            ARTIFACT_NAME="RDSLinkSetup.exe"
           else
-            # Normalize OS name for filename (macOS/Linux)
             OS_LOWER=$(echo "$OS" | tr '[:upper:]' '[:lower:]')
             STAGING="staging"
             mkdir -p "$STAGING"
