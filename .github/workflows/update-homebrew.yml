@@ -33,7 +33,7 @@ jobs:
       - name: Clone homebrew tap
         uses: actions/checkout@v4
         with:
-          repository: DenzoNL/homebrew-tap  # Replace with your actual tap repo
+          repository: DenzoNL/homebrew-rdslink
           token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           path: tap
 
