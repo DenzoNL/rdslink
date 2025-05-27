@@ -1,0 +1,29 @@
+rdslink v0.2.1
+
+This product includes software developed by Amazon Web Services, Inc.:
+- aws-config
+- aws-sdk-ec2
+- aws-sdk-rds
+- aws-sdk-sts
+
+These libraries are licensed under the Apache License, Version 2.0.
+
+You may obtain a copy of the Apache License at:
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+---
+
+This project also uses the following third-party libraries:
+
+- `clap` (MIT and/or Apache-2.0)
+- `inquire` (MIT)
+- `tokio` (MIT and/or Apache-2.0)
+
+All trademarks and copyrights remain the property of their respective owners.
