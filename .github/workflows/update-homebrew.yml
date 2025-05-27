@@ -1,0 +1,54 @@
+name: Update Homebrew Formula
+
+on:
+  release:
+    types: [published]
+    workflow_dispatch:
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+
+      - name: Set variables
+        id: vars
+        run: |
+          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Download tarball
+        run: |
+          curl -L "https://github.com/${{ github.repository }}/archive/refs/tags/${{ steps.vars.outputs.tag }}.tar.gz" -o release.tar.gz
+          shasum -a 256 release.tar.gz > sha256.txt
+          echo "sha256=$(cut -d ' ' -f1 sha256.txt)" >> $GITHUB_OUTPUT
+        id: checksum
+
+      - name: Clone homebrew tap
+        uses: actions/checkout@v4
+        with:
+          repository: DenzoNL/homebrew-rdslink
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: tap
+
+      - name: Update formula
+        run: |
+          FORMULA="tap/Formula/rdslink.rb"
+          TAG=${{ steps.vars.outputs.tag }}
+          URL="https://github.com/${{ github.repository }}/archive/refs/tags/${TAG}.tar.gz"
+          SHA256=${{ steps.checksum.outputs.sha256 }}
+
+          # Replace URL and SHA256 in formula
+          sed -i.bak -E "s|url \".*\"|url \"$URL\"|" "$FORMULA"
+          sed -i.bak -E "s|sha256 \".*\"|sha256 \"$SHA256\"|" "$FORMULA"
+
+          rm "$FORMULA.bak"
+
+      - name: Commit and push
+        run: |
+          cd tap
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git commit -am "Update formula to ${{ steps.vars.outputs.tag }}"
+          git push
