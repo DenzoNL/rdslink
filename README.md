@@ -34,7 +34,7 @@ $ brew install rdslink
 
 ## Installation (Windows)
 
-For Windows, you can download the latest release from
+For Windows, you can download the latest installer from
 the [GitHub releases page](https://github.com/DenzoNL/rdslink/releases)
 
 ## Usage
