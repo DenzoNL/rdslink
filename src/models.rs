@@ -19,10 +19,26 @@ impl std::fmt::Display for EC2Instance {
 pub struct RDSInstance {
     pub name: String,
     pub endpoint: String,
+    pub rds_type: RdsType,
 }
 
 impl std::fmt::Display for RDSInstance {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-        writeln!(f, "{} ({})", self.name, self.endpoint)
+        writeln!(f, "{} [{}] ({})", self.name, self.rds_type, self.endpoint)
+    }
+}
+
+#[derive(Debug)]
+pub enum RdsType {
+    Instance,
+    Cluster,
+}
+
+impl std::fmt::Display for RdsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            RdsType::Instance => write!(f, "instance"),
+            RdsType::Cluster => write!(f, "cluster"),
+        }
     }
 }
