@@ -12,11 +12,14 @@ use crate::port_forwarding::start_port_forwarding_session;
 use crate::rds::get_rds_instances;
 use clap::Parser;
 use inquire::Select;
+use std::net::TcpListener;
 use std::process::exit;
 
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
+
+    ensure_port_available(&args.local_port);
 
     let profiles = match get_aws_profiles().await {
         Ok(profiles) => {
@@ -120,4 +123,25 @@ async fn main() {
         &args.remote_port,
         &args.local_port,
     );
+}
+
+fn ensure_port_available(port: &String) {
+    match TcpListener::bind(format!("127.0.0.1:{}", port)) {
+        Ok(_) => {}
+        Err(_) => {
+            eprintln!(
+                "Port {} is already in use.\n\nPlease close the application using this port or specify a different port using the --local-port option.",
+                port
+            );
+            #[cfg(any(target_os = "macos", target_os = "linux"))]
+            {
+                eprintln!(
+                    "If you want to kill the process using this port, you can run:\n\n\
+                    kill -9 $(lsof -t -i :{})",
+                    port
+                );
+            }
+            exit(1)
+        }
+    }
 }
