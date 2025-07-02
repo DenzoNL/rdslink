@@ -8,8 +8,7 @@ pub fn start_port_forwarding_session(
     local_port: &str,
 ) {
     let parameters = format!(
-        "{{\"portNumber\":[\"{}\"],\"localPortNumber\":[\"{}\"],\"host\":[\"{}\"]}}",
-        remote_port, local_port, rds_host
+        "{{\"portNumber\":[\"{remote_port}\"],\"localPortNumber\":[\"{local_port}\"],\"host\":[\"{rds_host}\"]}}"
     );
 
     let status = Command::new("aws")
