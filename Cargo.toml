@@ -4,9 +4,9 @@ version = "0.4.0"
 edition = "2024"
 
 [dependencies]
-aws-config = "1.8.1"
-aws-sdk-ec2 = "1.145.0"
-aws-sdk-rds = "1.96.0"
+aws-config = "1.8.2"
+aws-sdk-ec2 = "1.146.0"
+aws-sdk-rds = "1.97.0"
 aws-sdk-sts = "1.75.0"
 clap = { version = "4.5.41", features = ["derive"] }
 inquire = "0.7.5"
