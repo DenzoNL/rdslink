@@ -16,7 +16,7 @@ pub async fn get_aws_profiles() -> Result<Vec<String>, ProfileFileLoadError> {
 }
 
 pub async fn get_aws_config(profile_name: &str) -> SdkConfig {
-    aws_config::defaults(BehaviorVersion::v2025_01_17())
+    aws_config::defaults(BehaviorVersion::v2025_08_07())
         .profile_name(profile_name)
         .load()
         .await
