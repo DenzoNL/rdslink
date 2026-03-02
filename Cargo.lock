@@ -165,9 +165,9 @@ dependencies = [
 
 [[package]]
 name = "aws-sdk-ec2"
-version = "1.211.1"
+version = "1.215.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bedb3080c7585181d7e536424fcd32db29262fe6158baa7282dc072e6bb2e6af"
+checksum = "be89f62e5e253381295e2ee3257e10ce43aa6a9dcc4bed795d87fdc4cd2ca207"
 dependencies = [
  "aws-credential-types",
  "aws-runtime",
@@ -1295,9 +1295,9 @@ dependencies = [
 
 [[package]]
 name = "inquire"
-version = "0.9.3"
+version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "979f5ab9760427ada4fa5762b2d905e5b12704fb1fada07b6bfa66aeaa586f87"
+checksum = "6654738b8024300cf062d04a1c13c10c8e2cea598ec1c47dc9b6641159429756"
 dependencies = [
  "bitflags",
  "crossterm",
