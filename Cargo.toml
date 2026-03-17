@@ -8,6 +8,6 @@ aws-config = "1.8.15"
 aws-sdk-ec2 = "1.217.0"
 aws-sdk-rds = "1.128.0"
 aws-sdk-sts = "1.99.0"
-clap = { version = "4.5.60", features = ["derive"] }
+clap = { version = "4.6.0", features = ["derive"] }
 inquire = "0.9.4"
 tokio = { version = "1.50.0", features = ["full"] }
